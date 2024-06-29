@@ -1,0 +1,69 @@
+name: Sign Executables
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sign-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up PowerShell
+        uses: actions/setup-powershell@v1
+
+      - name: Generate self-signed certificate
+        id: generate_cert
+        run: |
+          $cert = New-SelfSignedCertificate -Type CodeSigning -Subject "CN=Oliver" -CertStoreLocation "Cert:\CurrentUser\My"
+          Export-PfxCertificate -Cert $cert -FilePath selfsigned.pfx -Password (ConvertTo-SecureString -String "GorillasGames" -Force -AsPlainText)
+          Write-Host "##[set-output name=cert-path;]$(Resolve-Path selfsigned.pfx)"
+      
+      - name: Sign Windows executable
+        run: |
+          signtool sign /f ${{ steps.generate_cert.outputs.cert-path }} /p "GorillasGames" /t "http://timestamp.digicert.com" "out/game.exe"
+
+      - name: Upload signed Windows executable
+        uses: actions/upload-artifact@v2
+        with:
+          name: signed-Windows-executable
+          path: out/game.exe
+
+  sign-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up environment for code signing
+        run: |
+          # Create a self-signed certificate
+          CERT_NAME="selfsigned"
+          CERT_KEYCHAIN="selfsigned.keychain"
+          CERT_PASSWORD="GorillasGames"
+          CERT_COMMON_NAME="Oliver"
+          
+          # Create a new keychain
+          security create-keychain -p $CERT_PASSWORD $CERT_KEYCHAIN
+          security default-keychain -s $CERT_KEYCHAIN
+          security unlock-keychain -p $CERT_PASSWORD $CERT_KEYCHAIN
+          security set-keychain-settings -t 3600 -u $CERT_KEYCHAIN
+          
+          # Create and import a self-signed certificate
+          openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -subj "/CN=$CERT_COMMON_NAME" -keyout $CERT_NAME.key -out $CERT_NAME.crt
+          openssl pkcs12 -export -out $CERT_NAME.p12 -inkey $CERT_NAME.key -in $CERT_NAME.crt -password pass:$CERT_PASSWORD
+          security import $CERT_NAME.p12 -k $CERT_KEYCHAIN -P $CERT_PASSWORD -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k $CERT_PASSWORD $CERT_KEYCHAIN
+          
+      - name: Sign macOS app
+        run: |
+          codesign --deep --force --verify --verbose --sign "Oliver" "out/game.app"
+
+      - name: Upload signed macOS app
+        uses: actions/upload-artifact@v2
+        with:
+          name: signed-macOS-app
+          path: out/game.app

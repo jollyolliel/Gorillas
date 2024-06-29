@@ -10,10 +10,13 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Set up PowerShell
-        uses: actions/setup-powershell@v1
+      - name: Set up PowerShell (if needed)
+        run: |
+          Install-Module -Name PowerShellGet -Force -SkipPublisherCheck
+          Install-Module -Name PackageManagement -Force
+          Import-Module PowerShellGet
 
       - name: Generate self-signed certificate
         id: generate_cert
@@ -27,7 +30,7 @@ jobs:
           signtool sign /f ${{ steps.generate_cert.outputs.cert-path }} /p "GorillasGames" /t "http://timestamp.digicert.com" "out/game.exe"
 
       - name: Upload signed Windows executable
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: signed-Windows-executable
           path: out/game.exe
@@ -36,7 +39,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up environment for code signing
         run: |
@@ -63,7 +66,7 @@ jobs:
           codesign --deep --force --verify --verbose --sign "Oliver" "out/game.app"
 
       - name: Upload signed macOS app
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: signed-macOS-app
           path: out/game.app

@@ -31,6 +31,12 @@ A gorilla game based on the old retro game [Gorillas.bas](https://classicreload.
 
 > [!IMPORTANT]
 > If you encounter security warnings because the app is from an unidentified developer, follow these steps to bypass them:
+> - Right click on the file and click open
+> - When The popup apears click the `Open` button
+>   
+> - **OR**
+>
+> - When a popup apears click `Open`
 > - Go to `System Preferences > Security & Privacy`.
 > - Click the `General` tab.
 > - Click the `Open Anyway` button next to the game name.
@@ -50,15 +56,23 @@ A gorilla game based on the old retro game [Gorillas.bas](https://classicreload.
 > - Click on `More info`.
 > - Click `Run anyway`.
 
-### Other Operating Systems (Not Ready yet)
+### Other Operating Systems
 
 If you're using an operating system other than macOS or Windows, such as Linux, iOS, or Android, you can play the game online:
 
 1. **Play Online**:
-   Visit the [GorillasGame Online](#) link to play the game in your browser.
+   Visit the [GorillasGame Online](https://replit.com/join/hisyxgsnyx-oliverlewis8) link to play the game in your browser.
+2. **Run the Game**:
+   On the top of the screen click run and then ajust the screen dimentions
+   
+
+**Online Rules**:
+- Dont touch or edit the code since it will inpact everyone
 
 > [!Note]
 > If you do play online, you need a keyboard since it is the way to handle inputs
+> If you happen to be playing when someone else is also online you will have to play together
+> If you want to play privatly, if you have an acount, you can fork it and run it yourself
 
 ## How to Play
 

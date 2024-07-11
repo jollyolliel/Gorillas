@@ -191,7 +191,7 @@ def throw_info(playerTurn, inputLvl, angle, speed):
         speed = ''
     p1Nametext = retroFont.render(playerNames[0], True, WHITE)
     p2Nametext = retroFont.render(playerNames[1], True, WHITE)
-    p2NameXPos = SCREEN_WIDTH - p2Nametext.get_width() - 10
+    p2NameXPos = SCREEN_WIDTH - p2Nametext.get_width() - 15
     if p2NameXPos > 715:
         p2NameXPos = 715
     
@@ -433,7 +433,7 @@ def handle_key_event(event):
                      pygame.K_5, pygame.K_6, pygame.K_7, pygame.K_8, pygame.K_9]:
         if playerLvl == 1 and len(currentAngle) < 2:
             currentAngle += pygame.key.name(event.key)
-        elif playerLvl == 2 and len(currentSpeed) < 2:
+        elif playerLvl == 2 and len(currentSpeed) < 3:
             currentSpeed += pygame.key.name(event.key)
 
 def display_score():
